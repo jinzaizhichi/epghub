@@ -1,4 +1,4 @@
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from epg import utils
 from epg.generator import xmltv
 from epg.generator import diyp
@@ -90,7 +90,10 @@ diyp.write(os.path.join(os.getcwd(), "web", "diyp_files"), channels)
 
 # Load the template
 templateLoader = FileSystemLoader(searchpath=os.path.join(os.getcwd(), "templates"))
-env = Environment(loader=templateLoader)
+env = Environment(
+    loader=templateLoader,
+    autoescape=select_autoescape(["html", "xml", "jinja2"]),
+)
 template = env.get_template("index.html.jinja2")
 
 title = "EPG"
