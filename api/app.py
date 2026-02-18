@@ -4,8 +4,9 @@ monkey.patch_all()
 
 from apiflask import APIFlask, Schema
 from apiflask.fields import String, Date
-from flask import send_file
+from flask import send_file, send_from_directory
 from flask_compress import Compress
+from werkzeug.exceptions import NotFound
 import os
 
 
@@ -24,16 +25,11 @@ def diyp(query_data):
     ch = query_data["ch"]
     date = query_data["date"]
     try:
-        return send_file(
-            os.path.join(
-                os.getcwd(),
-                "web",
-                "diyp_files",
-                ch,
-                date.strftime("%Y-%m-%d") + ".json",
-            )
+        return send_from_directory(
+            directory=os.path.join(os.getcwd(), "web", "diyp_files"),
+            path=os.path.join(ch, date.strftime("%Y-%m-%d") + ".json"),
         )
-    except FileNotFoundError:
+    except (FileNotFoundError, NotFound):
         return send_file(os.path.join(os.getcwd(), "web", "404.json"))
 
 
